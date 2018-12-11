@@ -1,0 +1,14 @@
+cd_platform_home:
+    path:      /
+    defaults:
+        _controller: CDPlatformBundle:Project:index
+
+cd_platform_index:
+    path:      /project
+    defaults:
+        _controller: CDPlatformBundle:Project:index
+
+cd_platform_add:
+    path:      /project/add
+    defaults:
+        _controller: CDPlatformBundle:Project:add

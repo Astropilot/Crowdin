@@ -1,0 +1,15 @@
+{% extends "CDPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+	Projet - {{ parent() }}
+{% endblock %}
+
+{% block cdplatform_body %}
+
+	<h1 class="my-4">Projets
+		<small>Ajouter un projet</small>
+	</h1>
+
+	{{ include("CDPlatformBundle:Project:form.html.twig") }}
+
+{% endblock %}

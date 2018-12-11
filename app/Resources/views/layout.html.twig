@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>{% block title %}Crowdin{% endblock %}</title>
+        {% block stylesheets %}
+            <link href="https://blackrockdigital.github.io/startbootstrap-blog-home/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+            <style>#main { min-height: 500px; padding-top: 70px; }</style>
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="/">Crowdin</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/project">Projets</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Mon compte
+                            </a>
+                            {% if (app.user) %}
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/logout">Déconnexion</a>
+                            </div>
+                            {% else %}
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/login">Connexion</a>
+                                <a class="dropdown-item" href="/register">Inscription</a>
+                            </div>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container" id="main">
+            {% block body %}{% endblock %}
+        </div>
+
+        <footer class="py-5 bg-white">
+            <p class="m-0 text-center text-dark">Copyright &copy; Crowdin 2018</p>
+            <p class="m-0 text-center text-dark">By martin_h & despla_g</p>
+        </footer>
+        {% block javascripts %}
+            <script src="https://blackrockdigital.github.io/startbootstrap-blog-home/vendor/jquery/jquery.min.js"></script>
+            <script src="https://blackrockdigital.github.io/startbootstrap-blog-home/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        {% endblock %}
+    </body>
+</html>

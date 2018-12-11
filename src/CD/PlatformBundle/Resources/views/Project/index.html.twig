@@ -1,0 +1,39 @@
+{% extends "CDPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+	Projets - {{ parent() }}
+{% endblock %}
+
+{% block cdplatform_body %}
+	<h1 class="my-4">Projets
+		<small>Liste des projets</small>
+	</h1>
+
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Nom</th>
+					<th scope="col">Date de création</th>
+					<th scope="col">Nom d'utilisateur</th>
+					<th scope="col">Code de langue</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for project in projects %}
+					<tr>
+						<th scope="row">{{ project.id }}</th>
+						<td>{{ project.name }}</td>
+						<td>{{ project.date|date('d/m/Y') }}</td>
+						<td>{{ project.user.username }}</td>
+						<td>{{ project.langcode }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		</div><br />
+
+	<a href="/project/add" class="btn btn-success float-right">Créer un projet</a>
+{% endblock %}
+

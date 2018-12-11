@@ -1,0 +1,4 @@
+services:
+#    cd_platform.example:
+#        class: CD\PlatformBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
