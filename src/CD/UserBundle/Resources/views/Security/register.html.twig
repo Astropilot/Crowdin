@@ -43,6 +43,16 @@
 			</div>
 		</div>
 
+        <div class="form-group">
+			{{ form_label(form.langs, "Languages", {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+
+			{{ form_errors(form.langs) }}
+
+			<div class="col-sm-12">
+			  {{ form_widget(form.langs, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+
 		<div class="form-group">
 			{{ form_label(form.description, "Description", {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
 

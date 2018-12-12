@@ -44,11 +44,12 @@ class Project
     private $user;
 
     /**
-     * @var string
+     * @var CD\PlatformBundle\Entity\Lang
      *
-     * @ORM\Column(name="lang_code", type="string", length=5)
+     * @ORM\ManyToOne(targetEntity="CD\PlatformBundle\Entity\Lang")
+     * @ORM\JoinColumn(name="lang_code", referencedColumnName="code")
      */
-    private $langCode;
+    private $lang;
 
 
     /**
@@ -110,27 +111,27 @@ class Project
     }
 
     /**
-     * Set langCode
+     * Set lang
      *
-     * @param string $langCode
+     * @param \CD\PlatformBundle\Entity\Lang $lang
      *
      * @return Project
      */
-    public function setLangCode($langCode)
+    public function setLang(\CD\PlatformBundle\Entity\Lang $lang = null)
     {
-        $this->langCode = $langCode;
+        $this->lang = $lang;
 
         return $this;
     }
 
     /**
-     * Get langCode
+     * Get lang
      *
-     * @return string
+     * @return \CD\PlatformBundle\Entity\Lang
      */
-    public function getLangCode()
+    public function getLang()
     {
-        return $this->langCode;
+        return $this->lang;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace CD\PlatformBundle\Controller;
 
 use CD\PlatformBundle\Entity\Project;
+use CD\PlatformBundle\Entity\Lang;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -10,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ProjectController extends Controller
 {
@@ -62,7 +64,7 @@ class ProjectController extends Controller
 
 		$formBuilder
 			->add('name',      TextType::class)
-			->add('langcode',  TextType::class)
+            ->add('lang',  EntityType::class, array('class' => Lang::class, 'choice_label' => 'code', 'multiple' => false))
 			->add('save',      SubmitType::class, array('label' => 'Valider'))
 		;
 

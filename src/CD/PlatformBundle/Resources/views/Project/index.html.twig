@@ -27,7 +27,7 @@
 						<td>{{ project.name }}</td>
 						<td>{{ project.date|date('d/m/Y') }}</td>
 						<td>{{ project.user.username }}</td>
-						<td>{{ project.langcode }}</td>
+						<td>{{ project.lang.code }}</td>
 					</tr>
 				{% endfor %}
 			</tbody>
@@ -36,4 +36,3 @@
 
 	<a href="/project/add" class="btn btn-success float-right">Créer un projet</a>
 {% endblock %}
-

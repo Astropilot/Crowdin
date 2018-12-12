@@ -2,6 +2,7 @@
 namespace CD\UserBundle\Controller;
 
 use CD\UserBundle\Entity\User;
+use CD\PlatformBundle\Entity\Lang;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -13,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class SecurityController extends Controller
 {
@@ -44,7 +46,7 @@ class SecurityController extends Controller
         ->add('password',       PasswordType::class)
         ->add('email',          EmailType::class)
         ->add('description',    TextareaType::class, array('required' => false))
-        //->add('langs',          ChoiceType::class, array('choices', $langs))
+        ->add('langs',          EntityType::class, array('class' => Lang::class, 'choice_label' => 'code', 'multiple' => true, 'required' => false))
         ->add('save',           SubmitType::class, array('label' => 'Inscription'))
         ;
 
