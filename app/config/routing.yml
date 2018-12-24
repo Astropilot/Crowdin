@@ -1,19 +1,13 @@
 cd_platform:
-    resource: "@CDPlatformBundle/Resources/config/routing.yml"
-    prefix:   /
+    resource: "@CDPlatformBundle/Controller/"
+    type:     annotation
 
-login:
-    path: /login
-    defaults:
-        _controller: CDUserBundle:Security:login
-
-register:
-    path: /register
-    defaults:
-        _controller: CDUserBundle:Security:register
-
-login_check:
-    path: /login_check
+cd_user:
+    resource: "@CDUserBundle/Controller/"
+    type:     annotation
 
 logout:
     path: /logout
+
+login_check:
+    path: /login_check

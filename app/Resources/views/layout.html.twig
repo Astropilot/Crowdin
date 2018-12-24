@@ -22,7 +22,7 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/project">Projets</a>
+                            <a class="nav-link" href="{{ path('projects_list') }}">Projets</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,12 +30,14 @@
                             </a>
                             {% if (app.user) %}
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="/logout">Déconnexion</a>
+                                <a class="dropdown-item" href="{{ path('user_view', {'username': app.user.username}) }}">Mon profil</a>
+                                <a class="dropdown-item" href="{{ path('user_modify') }}">Modifier mon compte</a>
+                                <a class="dropdown-item" href="{{ path('logout') }}">Déconnexion</a>
                             </div>
                             {% else %}
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="/login">Connexion</a>
-                                <a class="dropdown-item" href="/register">Inscription</a>
+                                <a class="dropdown-item" href="{{ path('user_login') }}">Connexion</a>
+                                <a class="dropdown-item" href="{{ path('user_register') }}">Inscription</a>
                             </div>
                             {% endif %}
                         </li>

@@ -4,6 +4,7 @@ namespace CD\UserBundle\Controller;
 use CD\UserBundle\Entity\User;
 use CD\PlatformBundle\Entity\Lang;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -18,10 +19,13 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class SecurityController extends Controller
 {
+    /**
+     * @Route("/user/login", name="user_login")
+     */
     public function loginAction(Request $request)
     {
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            return $this->redirectToRoute('cd_platform_home');
+            return $this->redirectToRoute('projects_list');
         }
 
         $authenticationUtils = $this->get('security.authentication_utils');
@@ -32,6 +36,9 @@ class SecurityController extends Controller
         ));
     }
 
+    /**
+     * @Route("/user/register", name="user_register")
+     */
     public function registerAction(Request $request)
     {
         $user = new User();
@@ -64,12 +71,67 @@ class SecurityController extends Controller
                 $em->flush();
 
                 $request->getSession()->getFlashBag()->add('success', 'Inscription réussie!');
-                return $this->redirectToRoute('cd_platform_home');
+                return $this->redirectToRoute('projects_list');
             }
         }
 
         return $this->render('CDUserBundle:Security:register.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+
+    /**
+     * @Route("/user/modify", name="user_modify")
+     */
+    public function modifyAction(Request $request)
+    {
+        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            return $this->redirectToRoute('user_login');
+        }
+
+        $user = $this->getUser();
+
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
+
+        $formBuilder
+        ->add('description',    TextareaType::class, array('required' => false))
+        ->add('langs',          EntityType::class, array('class' => Lang::class, 'choice_label' => 'code', 'multiple' => true, 'required' => false))
+        ->add('save',           SubmitType::class, array('label' => 'Modifier'))
+        ;
+
+        $form = $formBuilder->getForm();
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
+
+                $request->getSession()->getFlashBag()->add('success', 'Votre compte à bien été modifié !');
+            }
+        }
+
+        return $this->render('CDUserBundle:Security:modify.html.twig', array(
+            'form' => $form->createView(),
+        ));
+
+    }
+
+    /**
+     * @Route("/user/{username}", name="user_view", requirements={"username"="\w+"})
+     */
+    public function showAction($username)
+    {
+        $repository = $this->getDoctrine()->getManager()->getRepository('CDUserBundle:User');
+
+		$user = $repository->findOneByUsername($username);
+
+        return $this->render('CDUserBundle:Security:view.html.twig', array(
+            'user' => $user,
+        ));
+
     }
 }

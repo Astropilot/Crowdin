@@ -24,11 +24,11 @@ security:
       anonymous:    true
       provider:  main
       form_login:
-        login_path: login
+        login_path: user_login
         check_path: login_check
       logout:
         path:       logout
-        target:     login
+        target:     user_login
 
   access_control:
     #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }

@@ -1,0 +1,10 @@
+{% extends "CDPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+    Profil - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <h1 class="my-4">Profil de {{ user.username }}</h1>
+
+{% endblock %}

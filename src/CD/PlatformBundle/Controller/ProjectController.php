@@ -5,6 +5,7 @@ namespace CD\PlatformBundle\Controller;
 use CD\PlatformBundle\Entity\Project;
 use CD\PlatformBundle\Entity\Lang;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -15,10 +16,14 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ProjectController extends Controller
 {
+
+    /**
+     * @Route("/", name="projects_list")
+     */
 	public function indexAction()
 	{
 		if (null === $this->getUser()) {
-      		return $this->redirectToRoute('login');
+      		return $this->redirectToRoute('user_login');
 		}
 
 		$repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
@@ -30,6 +35,9 @@ class ProjectController extends Controller
 		));
 	}
 
+    /**
+     * @Route("/project/{id}", name="project_show", requirements={"id"="\d+"})
+     */
 	public function viewAction($id)
 	{
 		if (null === $this->getUser()) {
@@ -50,6 +58,9 @@ class ProjectController extends Controller
 		));
 	}
 
+    /**
+     * @Route("/project/add", name="project_add")
+     */
 	public function addAction(Request $request)
 	{
 		if (null === $this->getUser()) {
