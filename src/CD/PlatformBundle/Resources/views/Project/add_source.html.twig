@@ -1,0 +1,65 @@
+{% extends "CDPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+	Projet - {{ parent() }}
+{% endblock %}
+
+{% block cdplatform_body %}
+
+	<h1 class="my-4">Projet
+		<small>{{ project.getName() }}</small>
+	</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <h2>Ajouter une source</h2>
+
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+    	{{ form_errors(form) }}
+
+    	<div class="form-group">
+    		{{ form_label(form.source.source, "Nom de la source", {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
+
+    		{{ form_errors(form.source.source) }}
+
+    		<div class="col-sm-12">
+    		  {{ form_widget(form.source.source, {'attr': {'class': 'form-control'}}) }}
+    		</div>
+    	</div>
+
+        <div class="form-group">
+    		{{ form_label(form.target, "Traduction dans la langue du projet", {'label_attr': {'class': 'col-sm-4 control-label'}}) }}
+
+    		{{ form_errors(form.target) }}
+
+    		<div class="col-sm-12">
+    		  {{ form_widget(form.target, {'attr': {'class': 'form-control'}}) }}
+    		</div>
+    	</div>
+
+    	<div class="form-group">
+    		<div class="col-sm-12">
+    		{{ form_widget(form.save, {'attr': {'class': 'btn btn-success float-r'}}) }}
+    		</div>
+    	</div>
+
+    	{{ form_rest(form) }}
+
+    {{ form_end(form) }}
+
+    <h2>Importer un fichier de sources</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="sourcesFile">Fichier CSV de sources</label>
+        <input type="file" class="form-control-file" id="sourcesFile" name="sourcesFile">
+      </div>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+
+{% endblock %}

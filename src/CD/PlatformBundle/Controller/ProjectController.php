@@ -4,6 +4,8 @@ namespace CD\PlatformBundle\Controller;
 
 use CD\PlatformBundle\Entity\Project;
 use CD\PlatformBundle\Entity\Lang;
+use CD\PlatformBundle\Entity\Traduction_Source;
+use CD\PlatformBundle\Entity\Traduction_Target;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
+use CD\PlatformBundle\Form\Traduction_TargetType;
 
 class ProjectController extends Controller
 {
@@ -41,7 +45,7 @@ class ProjectController extends Controller
 	public function viewAction($id)
 	{
 		if (null === $this->getUser()) {
-      		return $this->redirectToRoute('cd_platform_home');
+      		return $this->redirectToRoute('projects_list');
 		}
 
 		$repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
@@ -64,7 +68,7 @@ class ProjectController extends Controller
 	public function addAction(Request $request)
 	{
 		if (null === $this->getUser()) {
-      		return $this->redirectToRoute('cd_platform_home');
+      		return $this->redirectToRoute('projects_list');
 		}
 
 		$user = $this->getUser();
@@ -93,7 +97,7 @@ class ProjectController extends Controller
 				$em->flush();
 
 				$request->getSession()->getFlashBag()->add('success', 'Le projet a bien été créé!');
-				return $this->redirectToRoute('cd_platform_home');
+				return $this->redirectToRoute('projects_list');
 			}
 		}
 
@@ -101,4 +105,71 @@ class ProjectController extends Controller
 			'form' => $form->createView(),
 		));
 	}
+
+    /**
+     * @Route("/project/{id}/addsource", name="project_addsource", requirements={"id"="\d+"})
+     */
+    public function addSourceAction($id, Request $request)
+    {
+        if (null === $this->getUser()) {
+      		return $this->redirectToRoute('projects_list');
+		}
+
+		$repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
+		$project = $repository->find($id);
+
+		if (null === $project) {
+			throw new NotFoundHttpException("Le projet portant l'id ".$id." n'existe pas.");
+		}
+
+        if ($project->getUser() != $this->getUser()) {
+            return $this->redirectToRoute('projects_list');
+        }
+
+        $source = new Traduction_Source();
+        $source->setProject($project);
+
+        $target = new Traduction_Target();
+        $target->setLang($project->getLang());
+        $target->setSource($source);
+
+        $form   = $this->get('form.factory')->create(Traduction_TargetType::class, $target);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+          $em = $this->getDoctrine()->getManager();
+          $em->persist($target);
+          $em->persist($source);
+          $em->flush();
+
+          $request->getSession()->getFlashBag()->add('success', 'La source à bien été ajoutée !');
+          //return $this->redirectToRoute('projects_list');
+      } elseif ($request->isMethod('POST') && $request->files->get('sourcesFile') != null) {
+          $file = $request->files->get('sourcesFile');
+          $extension = $file->guessExtension();
+          if ($extension === "txt") {
+
+              if (($handle = fopen($file->getRealPath(), 'r')) !== FALSE) {
+                  while (($data = fgetcsv($handle, 1000, ';')) !== FALSE) {
+                      $source = new Traduction_Source();
+                      $source->setProject($project);
+                      $source->setSource($data[0]);
+                      $target = new Traduction_Target();
+                      $target->setLang($project->getLang());
+                      $target->setSource($source);
+                      $target->setTarget($data[1]);
+                      $em = $this->getDoctrine()->getManager();
+                      $em->persist($target);
+                      $em->persist($source);
+                  }
+                  $em->flush();
+                  $request->getSession()->getFlashBag()->add('success', 'Les sources du fichier ont bien été ajoutées !');
+              }
+          }
+      }
+
+        return $this->render('CDPlatformBundle:Project:add_source.html.twig', array(
+			'project' => $project,
+            'form' =>$form->createView()
+		));
+    }
 }

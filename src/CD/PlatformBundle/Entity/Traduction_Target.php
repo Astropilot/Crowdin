@@ -37,6 +37,13 @@ class Traduction_Target
      */
     private $source;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Target", type="string", length=255)
+     */
+    private $target;
+
 
     /**
      * Get id
@@ -94,5 +101,29 @@ class Traduction_Target
     public function getSource()
     {
         return $this->source;
+    }
+
+    /**
+     * Set target
+     *
+     * @param string $target
+     *
+     * @return Traduction_Source
+     */
+    public function setTarget($target)
+    {
+        $this->target = $target;
+
+        return $this;
+    }
+
+    /**
+     * Get target
+     *
+     * @return string
+     */
+    public function getTarget()
+    {
+        return $this->target;
     }
 }

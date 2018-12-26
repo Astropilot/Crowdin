@@ -5,6 +5,28 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="my-4">Profil de {{ user.username }}</h1>
+    {% if (user) %}
+        <h1 class="my-4">Profil de {{ user.username }}</h1>
 
+        <h2>Projets traduits</h2>
+
+        <h2>Langues de l'utilisateur</h2>
+        <form>
+          <div class="form-group">
+            <select multiple class="form-control">
+                {% for lang in user.getLangs() %}
+                    <option>{{lang.code}}</option>
+                {% endfor %}
+            </select>
+          </div>
+        </form>
+        <h2>Description</h2>
+        <form>
+            <div class="form-group">
+              <textarea class="form-control" rows="3" readonly>{{user.description}}</textarea>
+            </div>
+        </form>
+    {% else %}
+        <h1 class="text-center my-4">Utilisateur introuvable</h1>
+    {% endif %}
 {% endblock %}
