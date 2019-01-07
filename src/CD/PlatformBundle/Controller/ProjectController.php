@@ -56,9 +56,8 @@ class ProjectController extends Controller
 		}
 
 		return $this->render('CDPlatformBundle:Project:view.html.twig', array(
-			'project_id' => $project->getId(),
-			'project_name' => $project->getName(),
-			'project_date' => $project->getDate()
+			'project' => $project,
+            'sources' => $project->getSources(),
 		));
 	}
 
@@ -136,6 +135,9 @@ class ProjectController extends Controller
         $form   = $this->get('form.factory')->create(Traduction_TargetType::class, $target);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $source->setDate(new \Datetime());
+            $target->setDate(new \Datetime());
+            $target->setAuthor($this->getUser());
           $em = $this->getDoctrine()->getManager();
           $em->persist($target);
           $em->persist($source);
@@ -153,10 +155,13 @@ class ProjectController extends Controller
                       $source = new Traduction_Source();
                       $source->setProject($project);
                       $source->setSource($data[0]);
+                      $source->setDate(new \Datetime());
                       $target = new Traduction_Target();
                       $target->setLang($project->getLang());
                       $target->setSource($source);
                       $target->setTarget($data[1]);
+                      $target->setDate(new \Datetime());
+                      $target->setAuthor($this->getUser());
                       $em = $this->getDoctrine()->getManager();
                       $em->persist($target);
                       $em->persist($source);
@@ -171,5 +176,39 @@ class ProjectController extends Controller
 			'project' => $project,
             'form' =>$form->createView()
 		));
+    }
+
+    /**
+     * @Route("/project/{id}/froze", name="project_froze", requirements={"id"="\d+"})
+     */
+    public function frozeProjectAction($id, Request $request)
+    {
+        if (null === $this->getUser()) {
+      		return $this->redirectToRoute('projects_list');
+		}
+
+		$repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
+		$project = $repository->find($id);
+
+		if (null === $project) {
+			throw new NotFoundHttpException("Le projet portant l'id ".$id." n'existe pas.");
+		}
+
+        if ($project->getUser() != $this->getUser()) {
+            return $this->redirectToRoute('projects_list');
+        }
+
+        $project->setFrozen(!$project->getFrozen());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($project);
+        $em->flush();
+
+        return $this->redirectToRoute('projects_list');
+
+        /*return $this->render('CDPlatformBundle:Project:add_source.html.twig', array(
+			'project' => $project,
+            'form' =>$form->createView()
+		));*/
     }
 }

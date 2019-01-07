@@ -51,6 +51,20 @@ class Project
      */
     private $lang;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="frozen", type="boolean")
+     */
+    private $frozen = false;
+
+    /**
+     * @var CD\PlatformBundle\Entity\Traduction_Source
+     *
+     * @ORM\OneToMany(targetEntity="CD\PlatformBundle\Entity\Traduction_Source", mappedBy="project")
+     */
+    private $sources;
+
 
     /**
      * Get id
@@ -156,5 +170,63 @@ class Project
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set frozen
+     *
+     * @param boolean $frozen
+     *
+     * @return Project
+     */
+    public function setFrozen($frozen)
+    {
+        $this->frozen = $frozen;
+
+        return $this;
+    }
+
+    /**
+     * Get frozen
+     *
+     * @return boolean
+     */
+    public function getFrozen()
+    {
+        return $this->frozen;
+    }
+
+    /**
+     * Add source
+     *
+     * @param \CD\PlatformBundle\Entity\Traduction_Source $source
+     *
+     * @return Project
+     */
+    public function addSource(\CD\PlatformBundle\Entity\Traduction_Source $source)
+    {
+        $this->sources[] = $source;
+
+        return $this;
+    }
+
+    /**
+     * Remove source
+     *
+     * @param \CD\PlatformBundle\Entity\Traduction_Source $source
+     */
+    public function removeSource(\CD\PlatformBundle\Entity\Traduction_Source $source)
+    {
+        $this->sources->removeElement($source);
+    }
+
+    /**
+     * Get sources
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSources()
+    {
+        return $this->sources;
     }
 }

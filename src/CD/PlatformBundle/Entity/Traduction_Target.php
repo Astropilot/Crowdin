@@ -32,7 +32,7 @@ class Traduction_Target
     /**
      * @var CD\PlatformBundle\Entity\Traduction_Source
      *
-     * @ORM\ManyToOne(targetEntity="CD\PlatformBundle\Entity\Traduction_Source")
+     * @ORM\ManyToOne(targetEntity="CD\PlatformBundle\Entity\Traduction_Source", inversedBy="targets")
      * @ORM\JoinColumn(name="traduction_source_id", referencedColumnName="id")
      */
     private $source;
@@ -43,6 +43,21 @@ class Traduction_Target
      * @ORM\Column(name="Target", type="string", length=255)
      */
     private $target;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
+
+    /**
+     * @var CD\UserBundle\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="CD\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $author;
 
 
     /**
@@ -125,5 +140,53 @@ class Traduction_Target
     public function getTarget()
     {
         return $this->target;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Project
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Set author
+     *
+     * @param \CD\UserBundle\Entity\User $author
+     *
+     * @return Traduction_Target
+     */
+    public function setAuthor(\CD\UserBundle\Entity\User $author = null)
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get author
+     *
+     * @return \CD\UserBundle\Entity\User
+     */
+    public function getAuthor()
+    {
+        return $this->author;
     }
 }

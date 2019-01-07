@@ -1,0 +1,55 @@
+{% extends "CDPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+	Projet - {{ parent() }}
+{% endblock %}
+
+{% block cdplatform_body %}
+
+	<h1 class="my-4">Projet
+		<small>{{ project.getName() }}</small>
+	</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <h2>Récapitulatif</h2>
+
+    <p>Date de création: {{ project.date | date('d/m/Y') }}</p>
+    <p>Nombre de sources: {{ sources | length }}</p>
+    {% if project.getFrozen() %}
+        <p>Project actuellement mis en pause</p>
+    {% else %}
+        <p>Project actuellement disponible</p>
+    {% endif %}
+
+    <canvas id="sourcesChart" width="800" height="450"></canvas>
+
+    <script>
+        $( document ).ready(function() {
+            var ctx = $("#sourcesChart");
+
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                labels: [
+                    {% for source in sources %}
+                          '{{ source.getSource }}'{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                      ],
+                  datasets: [{
+                    data: [
+                        {% for source in sources %}
+                            {{source.getTargets() | length }}{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    ]
+                  }]
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

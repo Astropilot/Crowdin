@@ -3,11 +3,16 @@
 namespace CD\PlatformBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * Traduction_Source
  *
- * @ORM\Table(name="traduction_source")
+ * @ORM\Table(name="traduction_source",
+ *    uniqueConstraints={
+ *        @UniqueConstraint(name="source_unique",
+ *            columns={"project_id", "Source"})
+ *    })
  * @ORM\Entity(repositoryClass="CD\PlatformBundle\Repository\Traduction_SourceRepository")
  */
 class Traduction_Source
@@ -24,7 +29,7 @@ class Traduction_Source
     /**
      * @var CD\PlatformBundle\Entity\Project
      *
-     * @ORM\ManyToOne(targetEntity="CD\PlatformBundle\Entity\Project")
+     * @ORM\ManyToOne(targetEntity="CD\PlatformBundle\Entity\Project", inversedBy="sources")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      */
     private $project;
@@ -35,6 +40,20 @@ class Traduction_Source
      * @ORM\Column(name="Source", type="string", length=45)
      */
     private $source;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime")
+     */
+    private $date;
+
+    /**
+     * @var CD\PlatformBundle\Entity\Traduction_Target
+     *
+     * @ORM\OneToMany(targetEntity="CD\PlatformBundle\Entity\Traduction_Target", mappedBy="source")
+     */
+    private $targets;
 
 
     /**
@@ -93,5 +112,63 @@ class Traduction_Source
     public function getSource()
     {
         return $this->source;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Project
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Add target
+     *
+     * @param \CD\PlatformBundle\Entity\Traduction_Target $target
+     *
+     * @return Traduction_Source
+     */
+    public function addTarget(\CD\PlatformBundle\Entity\Traduction_Target $target)
+    {
+        $this->targets[] = $target;
+
+        return $this;
+    }
+
+    /**
+     * Remove target
+     *
+     * @param \CD\PlatformBundle\Entity\Traduction_Target $target
+     */
+    public function removeSource(\CD\PlatformBundle\Entity\Traduction_Target $target)
+    {
+        $this->targets->removeElement($target);
+    }
+
+    /**
+     * Get targets
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTargets()
+    {
+        return $this->targets;
     }
 }

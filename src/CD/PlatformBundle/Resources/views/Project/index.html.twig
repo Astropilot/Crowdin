@@ -18,6 +18,7 @@
 					<th scope="col">Date de création</th>
 					<th scope="col">Nom d'utilisateur</th>
 					<th scope="col">Code de langue</th>
+                    <th scope="col">Bloqué ?</th>
                     <th scope="col">Actions</th>
 				</tr>
 			</thead>
@@ -30,8 +31,16 @@
 						<td>{{ project.user.username }}</td>
 						<td>{{ project.lang.code }}</td>
                         <td>
+                            {% if project.getFrozen() %}
+                                Oui
+                            {% else %}
+                                Non
+                            {% endif %}
+                        </td>
+                        <td>
                             {% if (app.user == project.getUser()) %}
                                 <a href="{{ path('project_addsource', {'id': project.id}) }}" class="btn btn-primary" role="button">Ajouter des sources</a>
+                                <a href="{{ path('project_froze', {'id': project.id}) }}" class="btn btn-warning" role="button">Bloquer/Debloquer</a>
                             {% endif %}
                         </td>
 					</tr>
