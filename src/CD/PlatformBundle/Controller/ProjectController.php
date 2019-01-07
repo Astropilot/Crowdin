@@ -201,7 +201,7 @@ class ProjectController extends Controller
         $project->setFrozen(!$project->getFrozen());
 
         $em = $this->getDoctrine()->getManager();
-        $em->persist($project);
+        //$em->persist($project);
         $em->flush();
 
         return $this->redirectToRoute('projects_list');
@@ -210,5 +210,40 @@ class ProjectController extends Controller
 			'project' => $project,
             'form' =>$form->createView()
 		));*/
+    }
+
+    /**
+     * @Route("/project/{id}/delete", name="project_delete", requirements={"id"="\d+"})
+     */
+    public function deleteProjectAction($id, Request $request)
+    {
+        if (null === $this->getUser()) {
+      		return $this->redirectToRoute('projects_list');
+		}
+
+		$repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
+		$project = $repository->find($id);
+
+		if (null === $project) {
+			throw new NotFoundHttpException("Le projet portant l'id ".$id." n'existe pas.");
+		}
+
+        if ($project->getUser() != $this->getUser()) {
+            return $this->redirectToRoute('projects_list');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        foreach ($project->getSources() as $source) {
+            foreach ($source->getTargets() as $target) {
+                $em->remove($target);
+            }
+            $em->remove($source);
+        }
+        $em->flush();
+        $em->remove($project);
+        $em->flush();
+
+        return $this->redirectToRoute('projects_list');
     }
 }

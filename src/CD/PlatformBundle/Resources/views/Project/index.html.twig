@@ -25,7 +25,9 @@
 			<tbody>
 				{% for project in projects %}
 					<tr>
-						<th scope="row">{{ project.id }}</th>
+						<th scope="row">
+                        <a href="{{ path('project_show', {'id': project.id}) }}" class="btn btn-primary" role="button">{{ project.id }}</a>
+                        </th>
 						<td>{{ project.name }}</td>
 						<td>{{ project.date|date('d/m/Y') }}</td>
 						<td>{{ project.user.username }}</td>
@@ -39,8 +41,9 @@
                         </td>
                         <td>
                             {% if (app.user == project.getUser()) %}
-                                <a href="{{ path('project_addsource', {'id': project.id}) }}" class="btn btn-primary" role="button">Ajouter des sources</a>
-                                <a href="{{ path('project_froze', {'id': project.id}) }}" class="btn btn-warning" role="button">Bloquer/Debloquer</a>
+                                <a href="{{ path('project_addsource', {'id': project.id}) }}" class="btn btn-primary" role="button">Ajouter des sources</a><br>
+                                <a href="{{ path('project_froze', {'id': project.id}) }}" class="btn btn-warning" role="button">Bloquer/Debloquer</a><br>
+                                <a href="{{ path('project_delete', {'id': project.id}) }}" class="btn btn-danger" role="button">Supprimer</a>
                             {% endif %}
                         </td>
 					</tr>

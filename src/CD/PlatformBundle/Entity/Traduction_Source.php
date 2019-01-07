@@ -4,6 +4,7 @@ namespace CD\PlatformBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Traduction_Source
@@ -157,7 +158,7 @@ class Traduction_Source
      *
      * @param \CD\PlatformBundle\Entity\Traduction_Target $target
      */
-    public function removeSource(\CD\PlatformBundle\Entity\Traduction_Target $target)
+    public function removeTarget(\CD\PlatformBundle\Entity\Traduction_Target $target)
     {
         $this->targets->removeElement($target);
     }
