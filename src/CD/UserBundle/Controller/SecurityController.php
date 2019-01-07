@@ -125,12 +125,20 @@ class SecurityController extends Controller
      */
     public function showAction($username)
     {
-        $repository = $this->getDoctrine()->getManager()->getRepository('CDUserBundle:User');
+        $repositoryUser = $this->getDoctrine()->getManager()->getRepository('CDUserBundle:User');
+        $repositoryTraductionTarget = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Traduction_Target');
 
-		$user = $repository->findOneByUsername($username);
+		$user = $repositoryUser->findOneByUsername($username);
+        $projects = $repositoryTraductionTarget->findByAuthor($user->getId());
+
+        $total = $repositoryTraductionTarget->countAllSourcesTranslated();
+        $total_user = $repositoryTraductionTarget->countSourcesTranslatedByUserId($user->getId());
 
         return $this->render('CDUserBundle:Security:view.html.twig', array(
             'user' => $user,
+            'projects' => $projects,
+            'total' => $total,
+            'total_user' => $total_user
         ));
 
     }

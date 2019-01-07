@@ -9,7 +9,30 @@
         <h1 class="my-4">Profil de {{ user.username }}</h1>
 
         <h2>Projets traduits</h2>
-
+        {% if (projects) %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nom du projet</th>
+                            <th scope="col">Nombre de source</th>
+                            <th scope="col">Nombre de source traduites par {{ user.username }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in projects %}
+                            <tr>
+                                <th scope="row">{{ p.source.project.name }}</th>
+                                <td>{{ total }}</td>
+                                <td>{{ total_user }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div><br />
+        {% else %}
+            <p>Aucun</p>
+        {% endif %}
         <h2>Langues de l'utilisateur</h2>
         <form>
           <div class="form-group">

@@ -10,4 +10,21 @@ namespace CD\PlatformBundle\Repository;
  */
 class Traduction_TargetRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function countAllSourcesTranslated()
+	{
+		return $this->createQueryBuilder('u')
+		->select('COUNT(u)')
+		->getQuery()
+		->getSingleScalarResult();
+	}
+
+	public function countSourcesTranslatedByUserId($id)
+	{
+		return $this->createQueryBuilder('u')
+		->select('COUNT(u)')
+		->where('u.author = :id')
+		->setParameter('id', $id)
+		->getQuery()
+		->getSingleScalarResult();
+	}
 }

@@ -10,12 +10,6 @@
 		<small>{{ project.getName() }}</small>
 	</h1>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
-
     <h2>Ajouter une source</h2>
 
     {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}

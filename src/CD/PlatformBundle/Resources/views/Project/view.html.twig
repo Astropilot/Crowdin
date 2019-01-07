@@ -10,12 +10,6 @@
 		<small>{{ project.getName() }}</small>
 	</h1>
 
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
-
     <h2>Récapitulatif</h2>
 
     <p>Date de création: {{ project.date | date('d/m/Y') }}</p>
