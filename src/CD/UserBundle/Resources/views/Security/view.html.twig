@@ -49,6 +49,61 @@
               <textarea class="form-control" rows="3" readonly>{{user.description}}</textarea>
             </div>
         </form>
+
+        <h2>Activité récente (30 derniers jours)</h2>
+        <div class="col-4">
+            <canvas id="activityChart" width="200" height="200"></canvas>
+        </div>
+
+        <script>
+            $( document ).ready(function() {
+                var ctx = $("#activityChart");
+
+                var myBarChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                    labels: [
+                        {% for date, nb in activity %}
+                              new Date('{{ date }}'){% if not loop.last %},{% endif %}
+                        {% endfor %}
+                          ],
+                      datasets: [{
+                        label: "Nombre de traduction",
+                        data: [
+                            {% for date, nb in activity %}
+                                {{ nb }}{% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        ],
+                        borderColor: '#fe8b36',
+                        backgroundColor: '#fe8b36',
+                      }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Date",
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                },
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: "Nombre de traduction",
+                                }
+                            }]
+                        }
+                    }
+                });
+            });
+        </script>
     {% else %}
         <h1 class="text-center my-4">Utilisateur introuvable</h1>
     {% endif %}

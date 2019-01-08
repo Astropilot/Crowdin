@@ -143,11 +143,18 @@ class SecurityController extends Controller
             $project->{"user_trad"} = $repositoryTraductionTarget->countSourcesTranslatedByUserIdForProject($user->getId(), $project->getId());
         }
 
-        
+        $current_date = new \DateTime("now");
+        $activity = array();
+        for ($i = 1; $i <= 30; $i++) {
+            $nb_trad = $repositoryTraductionTarget->countSourcesTranslatedByUserIdAtDate($user->getId(), $current_date);
+            $activity[$current_date->format('Y-m-d')] = $nb_trad;
+            $current_date->sub(new \DateInterval('P1D'));
+        }
 
         return $this->render('CDUserBundle:Security:view.html.twig', array(
             'user' => $user,
             'projects' => $projects,
+            'activity' => $activity
         ));
 
     }

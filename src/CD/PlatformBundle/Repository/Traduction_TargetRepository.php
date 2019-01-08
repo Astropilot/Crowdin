@@ -22,4 +22,20 @@ class Traduction_TargetRepository extends \Doctrine\ORM\EntityRepository
 		->getQuery()
 		->getSingleScalarResult();
 	}
+
+    public function countSourcesTranslatedByUserIdAtDate($userId, $date)
+    {
+        $from = new \DateTime($date->format("Y-m-d")." 00:00:00");
+        $to   = new \DateTime($date->format("Y-m-d")." 23:59:59");
+
+        return $this->createQueryBuilder('u')
+        ->select('COUNT(u)')
+        ->where('u.author = :uid')
+        ->andWhere('u.date BETWEEN :from AND :to')
+        ->setParameter('uid', $userId)
+        ->setParameter('from', $from)
+        ->setParameter('to', $to)
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
 }
