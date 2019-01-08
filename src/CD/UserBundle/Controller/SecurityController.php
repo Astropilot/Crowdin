@@ -129,16 +129,25 @@ class SecurityController extends Controller
         $repositoryTraductionTarget = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Traduction_Target');
 
 		$user = $repositoryUser->findOneByUsername($username);
-        $projects = $repositoryTraductionTarget->findByAuthor($user->getId());
+        $projects = array();
 
-        $total = $repositoryTraductionTarget->countAllSourcesTranslated();
-        $total_user = $repositoryTraductionTarget->countSourcesTranslatedByUserId($user->getId());
+        $user_all_trads = $repositoryTraductionTarget->findByAuthor($user);
+        foreach ($user_all_trads as $user_trad) {
+            $project = $user_trad->getSource()->getProject();
+            if (!array_key_exists($project->getId(), $projects))
+                $projects[$project->getId()] = $project;
+        }
+        $projects = array_values($projects);
+
+        foreach ($projects as $project) {
+            $project->{"user_trad"} = $repositoryTraductionTarget->countSourcesTranslatedByUserIdForProject($user->getId(), $project->getId());
+        }
+
+        
 
         return $this->render('CDUserBundle:Security:view.html.twig', array(
             'user' => $user,
             'projects' => $projects,
-            'total' => $total,
-            'total_user' => $total_user
         ));
 
     }

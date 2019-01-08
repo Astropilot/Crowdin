@@ -22,9 +22,9 @@
                     <tbody>
                         {% for p in projects %}
                             <tr>
-                                <th scope="row">{{ p.source.project.name }}</th>
-                                <td>{{ total }}</td>
-                                <td>{{ total_user }}</td>
+                                <th scope="row">{{ p.name }}</th>
+                                <td>{{ p.getSources() | length }}</td>
+                                <td>{{ p.user_trad }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
