@@ -1,0 +1,41 @@
+{% extends "CDPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+	Projet - {{ parent() }}
+{% endblock %}
+
+{% block cdplatform_body %}
+
+	<h1 class="my-4">Projet
+		<small>{{ project.getName() }}</small>
+	</h1>
+
+    <h2>Source "{{ source.source }}"</h2>
+
+    <h3>Liste des traductions</h3>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Langue de la traduction</th>
+                    <th scope="col">Traduction</th>
+                    <th scope="col">Auteur</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for traduction in source.getTargets() %}
+                    <tr>
+                        <th scope="row">{{ traduction.getLang().code }}</th>
+                        <th scope="row">{{ traduction.getTarget() }}</th>
+                        <th scope="row">{{ traduction.getAuthor().getUsername() }}</th>
+                        <td>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div><br />
+
+{% endblock %}

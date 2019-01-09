@@ -13,6 +13,7 @@
     <h2>Récapitulatif</h2>
 
     <p>Date de création: {{ project.date | date('d/m/Y') }}</p>
+    <p>Langue du projet: {{ project.getLang().code }}</p>
     <p>Nombre de sources: {{ sources | length }}</p>
     {% if project.getFrozen() %}
         <p>Project actuellement mis en pause</p>
@@ -25,6 +26,32 @@
     </div>
 
     <h2>Liste des sources</h2>
+    {% if (sources) %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Nom de la source</th>
+                        <th scope="col">Nombre de traduction</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for source in sources %}
+                        <tr>
+                            <th scope="row">{{ source.source }}</th>
+                            <td>{{ source.getTargets() | length }}</td>
+                            <td>
+                                <a href="{{ path('project_source', {'idproj': project.id, 'ids': source.id}) }}" class="btn btn-primary" role="button">Voir les traductions</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div><br />
+    {% else %}
+        <p>Aucune source pour le moment.</p>
+    {% endif %}
 
     <script>
         $( document ).ready(function() {

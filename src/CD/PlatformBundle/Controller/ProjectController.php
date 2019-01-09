@@ -62,6 +62,35 @@ class ProjectController extends Controller
 	}
 
     /**
+     * @Route("/project/{idproj}/view_source/{ids}", name="project_source", requirements={"idproj": "\d+", "ids": "\d+"})
+     */
+    public function viewTargetsAction($idproj, $ids)
+    {
+        if (null === $this->getUser()) {
+      		return $this->redirectToRoute('projects_list');
+		}
+
+        $repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
+		$project = $repository->find($idproj);
+
+        if (null === $project) {
+			throw new NotFoundHttpException("Le projet portant l'id ".$idproj." n'existe pas.");
+		}
+
+        $repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Traduction_Source');
+        $source = $repository->findOneBy(array('id' => $ids, 'project' => $project));
+
+        if (null === $source) {
+            throw new NotFoundHttpException("La source portant l'id ".$ids." n'existe pas.");
+        }
+
+        return $this->render('CDPlatformBundle:Project:view_source.html.twig', array(
+			'project' => $project,
+            'source' => $source,
+		));
+    }
+
+    /**
      * @Route("/project/add", name="project_add")
      */
 	public function addAction(Request $request)
