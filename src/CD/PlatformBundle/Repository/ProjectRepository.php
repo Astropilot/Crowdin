@@ -10,4 +10,23 @@ namespace CD\PlatformBundle\Repository;
  */
 class ProjectRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    public function getProjectsByLangs($uid, $langs)
+	{
+        $qb = $this->createQueryBuilder('p');
+
+		$qb->select('p');
+
+        $qb->where('p.user != :uid');
+        $qb->andWhere('p.lang IN (:langs)');
+
+        $qb->setParameter('uid', $uid);
+        $qb->setParameter('langs', $langs);
+
+        return $qb
+            ->getQuery()
+            ->getResult()
+        ;
+	}
+
 }

@@ -10,4 +10,26 @@ namespace CD\PlatformBundle\Repository;
  */
 class Traduction_SourceRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    public function getRandomUntranslatedSource($uid, $langs)
+	{
+		$result = $this->createQueryBuilder('s')
+            ->select('s')
+            ->innerJoin('s.project', 'project')
+            ->where('project.user != :uid')
+            ->andWhere('project.lang IN (:langs)')
+            ->andWhere('(SELECT COUNT(t) FROM CDPlatformBundle:Traduction_Target t WHERE t.source = s AND t.lang IN (:langs)) < :nb_langs')
+            ->setParameter('uid', $uid)
+            ->setParameter('langs', $langs)
+            ->setParameter('nb_langs', count($langs))
+            ->getQuery()
+            ->getResult()
+        ;
+
+        if (count($result) === 0)
+            return null;
+
+        return $result[rand(0, count($result) - 1)];
+	}
+
 }

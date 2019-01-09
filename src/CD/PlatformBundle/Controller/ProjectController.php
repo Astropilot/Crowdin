@@ -91,6 +91,30 @@ class ProjectController extends Controller
     }
 
     /**
+     * @Route("/traductor", name="traductor_page")
+     */
+    public function traductorViewAction()
+    {
+        if (null === $this->getUser()) {
+      		return $this->redirectToRoute('projects_list');
+		}
+        if (count($this->getUser()->getLangs()) < 2) {
+            return $this->redirectToRoute('projects_list');
+        }
+
+        $repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
+		$projects = $repository->getProjectsByLangs($this->getUser()->getId(), $this->getUser()->getLangs());
+
+        $repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Traduction_Source');
+        $random_source = $repository->getRandomUntranslatedSource($this->getUser()->getId(), $this->getUser()->getLangs());
+
+        return $this->render('CDPlatformBundle:Project:traductor_page.html.twig', array(
+			'projects' => $projects,
+            'random_source' => $random_source
+		));
+    }
+
+    /**
      * @Route("/project/add", name="project_add")
      */
 	public function addAction(Request $request)

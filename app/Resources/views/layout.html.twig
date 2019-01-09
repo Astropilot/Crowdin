@@ -25,6 +25,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('projects_list') }}">Projets</a>
                         </li>
+                        {% if (app.user and app.user.getLangs()|length >= 2) %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('traductor_page') }}">Traduction</a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Mon compte
