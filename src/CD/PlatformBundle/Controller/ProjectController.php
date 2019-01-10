@@ -24,15 +24,16 @@ class ProjectController extends Controller
     /**
      * @Route("/", name="projects_list")
      */
-	public function indexAction()
+	public function indexAction(Request $request)
 	{
 		if (null === $this->getUser()) {
-          return $this->redirectToRoute('user_login');
+      return $this->redirectToRoute('user_login');
 		}
 
 		$repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
 
-		$projects = $repository->findAll();
+		$projects_list = $repository->findAll();
+    $projects = $this->get('knp_paginator')->paginate($projects_list, $request->query->get('page', 1),10);
 
 		return $this->render('CDPlatformBundle:Project:index.html.twig', array(
 			'projects' => $projects
@@ -134,7 +135,7 @@ class ProjectController extends Controller
     /**
      * @Route("/traductor", name="traductor_page")
      */
-    public function traductorViewAction()
+    public function traductorViewAction(Request $request)
     {
         if (null === $this->getUser()) {
       		return $this->redirectToRoute('projects_list');
@@ -144,7 +145,8 @@ class ProjectController extends Controller
         }
 
         $repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
-		$projects = $repository->getProjectsByLangs($this->getUser()->getId(), $this->getUser()->getLangs());
+		    $projects_list = $repository->getProjectsByLangs($this->getUser()->getId(), $this->getUser()->getLangs());
+        $projects = $this->get('knp_paginator')->paginate($projects_list, $request->query->get('page', 1),10);
 
         $repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Traduction_Source');
         $random_source = $repository->getRandomUntranslatedSource($this->getUser()->getId(), $this->getUser()->getLangs());

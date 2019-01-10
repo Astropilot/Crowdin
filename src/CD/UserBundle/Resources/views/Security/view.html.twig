@@ -6,105 +6,127 @@
 
 {% block body %}
     {% if (user) %}
-        <h1 class="my-4">Profil de {{ user.username }}</h1>
+      <div class="row">
 
-        <h2>Projets traduits</h2>
-        {% if (projects) %}
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Nom du projet</th>
-                            <th scope="col">Nombre de source</th>
-                            <th scope="col">Nombre de source traduites par {{ user.username }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for p in projects %}
-                            <tr>
-                                <th scope="row">{{ p.name }}</th>
-                                <td>{{ p.getSources() | length }}</td>
-                                <td>{{ p.user_trad }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                </div><br />
-        {% else %}
-            <p>Aucun</p>
-        {% endif %}
-        <h2>Langues de l'utilisateur</h2>
-        <form>
-          <div class="form-group">
-            <select multiple class="form-control">
-                {% for lang in user.getLangs() %}
-                    <option>{{lang.code}}</option>
-                {% endfor %}
-            </select>
-          </div>
-        </form>
-        <h2>Description</h2>
-        <form>
-            <div class="form-group">
-              <textarea class="form-control" rows="3" readonly>{{user.description}}</textarea>
+        <div class="col-md-8">
+          <h1 class="my-4">Profil
+            <small>{{ user.username }}</small>
+          </h1>
+
+          <div class="card mb-4">
+            <div class="card-body">
+              <h2 class="card-title">Projets traduits</h2>
+                {% if (projects) %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nom du projet</th>
+                                    <th scope="col">Nombre de source</th>
+                                    <th scope="col">Nombre de source traduites par {{ user.username }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in projects %}
+                                    <tr>
+                                        <th scope="row">{{ p.name }}</th>
+                                        <td>{{ p.getSources() | length }}</td>
+                                        <td>{{ p.user_trad }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                        <div class="text-center">{{ knp_pagination_render(projects) }}</div>
+                {% else %}
+                    <div class="alert alert-info">Aucun projet traduit.</div>
+                {% endif %}
+                </div>
             </div>
-        </form>
 
-        <h2>Activité récente (30 derniers jours)</h2>
-        <div class="col-4">
-            <canvas id="activityChart" width="200" height="200"></canvas>
-        </div>
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h2 class="card-title">Description</h2>
+                    {% if (user.description) %}
+                        <p class="card-text">{{user.description}}</p>
+                    {% else %}
+                        <div class="alert alert-info">Non renseignée.</div>
+                    {% endif %}
+                </div>
+              </div>
 
-        <script>
-            $( document ).ready(function() {
-                var ctx = $("#activityChart");
+            </div>
+            <div class="col-md-4">
 
-                var myBarChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                    labels: [
-                        {% for date, nb in activity %}
-                              new Date('{{ date }}'){% if not loop.last %},{% endif %}
-                        {% endfor %}
-                          ],
-                      datasets: [{
-                        label: "Nombre de traduction",
-                        data: [
+              <div class="card my-4">
+                <h5 class="card-header">Langues</h5>
+                <div class="card-body">
+                    {% for lang in user.getLangs() %}
+                        <span class="badge badge-secondary">{{lang.code}}</span>
+                    {% endfor %}
+                </div>
+              </div>
+
+              <div class="card my-4">
+                <h5 class="card-header">Activité</h5>
+                <div class="card-body">
+                    <canvas id="activityChart" width="200" height="200"></canvas>
+                </div>
+              </div>
+
+            </div>
+
+            <script>
+                $( document ).ready(function() {
+                    var ctx = $("#activityChart");
+
+                    var myBarChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                        labels: [
                             {% for date, nb in activity %}
-                                {{ nb }}{% if not loop.last %},{% endif %}
+                                  new Date('{{ date }}'){% if not loop.last %},{% endif %}
                             {% endfor %}
-                        ],
-                        borderColor: '#fe8b36',
-                        backgroundColor: '#fe8b36',
-                      }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            xAxes: [{
-                                type: 'time',
-                                display: true,
-                                scaleLabel: {
+                              ],
+                          datasets: [{
+                            label: "Nombre de traduction",
+                            data: [
+                                {% for date, nb in activity %}
+                                    {{ nb }}{% if not loop.last %},{% endif %}
+                                {% endfor %}
+                            ],
+                            borderColor: '#fe8b36',
+                            backgroundColor: '#fe8b36',
+                          }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                xAxes: [{
+                                    type: 'time',
                                     display: true,
-                                    labelString: "Date",
-                                }
-                            }],
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true,
-                                },
-                                display: true,
-                                scaleLabel: {
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: "Date",
+                                    }
+                                }],
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                    },
                                     display: true,
-                                    labelString: "Nombre de traduction",
-                                }
-                            }]
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: "Nombre de traduction",
+                                    }
+                                }]
+                            }
                         }
-                    }
+                    });
                 });
-            });
-        </script>
-    {% else %}
-        <h1 class="text-center my-4">Utilisateur introuvable</h1>
-    {% endif %}
+            </script>
+        {% else %}
+            <div class="alert alert-warning">Cet utilisateur n'existe pas.</div>
+        {% endif %}
+  </div>
 {% endblock %}
