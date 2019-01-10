@@ -50,7 +50,7 @@ class SecurityController extends Controller
         //$repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Lang');
         //$langs = $repository->findAll();
 
-        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user, ['translation_domain' => false]);
 
         $formBuilder
         ->add('username',       TextType::class)
@@ -95,7 +95,7 @@ class SecurityController extends Controller
 
         $user = $this->getUser();
 
-        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user, ['translation_domain' => false]);
 
         $formBuilder
         ->add('description',    TextareaType::class, array('required' => false))

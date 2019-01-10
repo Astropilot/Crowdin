@@ -89,7 +89,7 @@ class ProjectController extends Controller
 
         $target = new Traduction_Target();
 
-		$formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $target);
+		$formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $target, ['translation_domain' => false]);
 
 		$formBuilder
             ->add('lang',       EntityType::class, array('class' => Lang::class,
@@ -170,7 +170,7 @@ class ProjectController extends Controller
 
 		$project = new Project();
 
-		$formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $project);
+		$formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $project, ['translation_domain' => false]);
 
 		$formBuilder
 			->add('name',      TextType::class)
@@ -228,7 +228,7 @@ class ProjectController extends Controller
         $target->setLang($project->getLang());
         $target->setSource($source);
 
-        $form   = $this->get('form.factory')->create(Traduction_TargetType::class, $target);
+        $form = $this->get('form.factory')->create(Traduction_TargetType::class, $target, ['translation_domain' => false]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $source->setDate(new \Datetime());

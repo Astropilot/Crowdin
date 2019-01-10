@@ -10,10 +10,33 @@
 	</h1>
 
     {% if (random_source) %}
-    <h2>Traduction aléatoire</h2>
-        <p>Projet: {{ random_source.getProject().getName() }}</p>
-        <p>Nom de la traduction: {{ random_source.getSource() }}</p>
-        <p>Valeur dans la langue du projet: None</p>
+        <div class="card mb-4 ">
+          <div class="card-body text-center">
+            <h2 class="card-title">Traduction aléatoire</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nom du projet</th>
+                            <th scope="col">Nom de la traduction</th>
+                            <th scope="col">Valeur de la traduction (langue du projet)</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td scope="row">{{ random_source.getProject().getName() }}</td>
+                            <td>{{ random_source.getSource() }}</td>
+                            <td>{{ random_source.getTargets()[0].getTarget() }}</td>
+                            <td>
+                                <a href="{{ path('project_source', {'idproj': random_source.getProject().id, 'ids': random_source.id}) }}" class="btn btn-primary" role="button">Traduire</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+          </div>
+        </div>
     {% endif %}
 
 	{% if (projects|length) %}
