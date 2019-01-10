@@ -43,7 +43,7 @@ class ProjectController extends Controller
     /**
      * @Route("/project/{id}", name="project_show", requirements={"id"="\d+"})
      */
-	public function viewAction($id)
+	public function viewAction($id, Request $request)
 	{
 		if (null === $this->getUser()) {
       		return $this->redirectToRoute('projects_list');
@@ -56,9 +56,13 @@ class ProjectController extends Controller
 			throw new NotFoundHttpException("Le projet portant l'id ".$id." n'existe pas.");
 		}
 
+    $project_src = $project->getSources();
+    $sources = $this->get('knp_paginator')->paginate($project_src, $request->query->get('page', 1),5);
+
 		return $this->render('CDPlatformBundle:Project:view.html.twig', array(
 			'project' => $project,
-            'sources' => $project->getSources(),
+      'sources' => $sources,
+      'allsources' => $project->getSources(),
 		));
 	}
 

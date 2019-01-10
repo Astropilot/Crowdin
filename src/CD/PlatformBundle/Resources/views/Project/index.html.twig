@@ -28,7 +28,9 @@
 							<td><a href="{{ path('project_show', {'id': project.id}) }}">{{ project.name }}</a></td>
 							<td><a href="{{ path('user_view', {'username': project.user.username}) }}">{{ project.user.username }}</a></td>
 							<td>{{ project.date|date('d/m/Y') }}</td>
-							<td>{{ project.lang.code }}</td>
+							<td>
+								<span data-toggle="tooltip" data-placement="top" title="{{project.lang.code}}" class="badge badge-light"><img width="29" height="19" src="http://flags.fmcdn.net/data/flags/w1160/{{project.lang.code[3:4]|lower}}.png" /></span>
+							</td>
 	                        <td>
 	                            {% if project.getFrozen() %}
 	                                <span class="badge badge-danger">Indisponible</span>
@@ -53,6 +55,10 @@
 	                                <a data-toggle="tooltip" data-placement="top" title="Supprimer" href="{{ path('project_delete', {'id': project.id}) }}" class="btn btn-danger" role="button">
 	                                	<i class="fas fa-trash-alt"></i>
 	                                </a>
+	                            {% else %}
+	                                <a data-toggle="tooltip" data-placement="top" title="Consulter" href="{{ path('project_show', {'id': project.id}) }}" class="btn btn-info" role="button">
+	                                	<i class="fas fa-eye"></i>
+	                                </a>
 	                            {% endif %}
 	                        </td>
 						</tr>
@@ -66,5 +72,5 @@
 		<div class="alert alert-warning">Aucun projet n'a été trouvé.</div>
 	{% endif %}
 
-	<a href="/project/add" class="btn btn-success float-right">Créer un projet</a>
+	<a href="/project/add" class="btn btn-success float-right"><i class="fas fa-plus"></i> Créer un projet</a>
 {% endblock %}

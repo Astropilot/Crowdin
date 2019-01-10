@@ -5,83 +5,109 @@
 {% endblock %}
 
 {% block cdplatform_body %}
+        <div class="row">
+          <div class="col-md-8">
+        	<h1 class="my-4">Projet
+        		<small>{{ project.getName() }}</small>
 
-	<h1 class="my-4">Projet
-		<small>{{ project.getName() }}</small>
-	</h1>
+            <a href="{{ path('projects_list') }}" style="float: right; margin-top: 10px;" role="button" class="btn btn-secondary"><i class="fas fa-long-arrow-alt-left"></i> Retour</a>
+        	</h1>
+              <div class="card mb-4">
+                <div class="card-body">
+                  <span data-toggle="tooltip" data-placement="top" title="{{ project.getLang().code}}" class="badge badge-dark" style="float: right; margin-top: 6px;"><img width="43.5" height="24" src="http://flags.fmcdn.net/data/flags/w1160/{{ project.getLang().code[3:4]|lower}}.png" /></span>
+                  <h2 class="card-title">Liste des source</h2>
+                    {% if (sources|length) %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nom de la source</th>
+                                        <th scope="col">Nombre de traduction</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for source in sources %}
+                                        <tr>
+                                            <th scope="row">{{ source.source }}</th>
+                                            <td>{{ source.getTargets() | length }}</td>
+                                            <td>
+                                                <a href="{{ path('project_source', {'idproj': project.id, 'ids': source.id}) }}" class="btn btn-info" role="button" data-toggle="tooltip" data-placement="top" title="Voir les traductions"><i class="fas fa-eye"></i></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div><br />
 
-    <h2>Récapitulatif</h2>
+                     <div class="text-center">{{ knp_pagination_render(sources) }}</div>
+                    {% else %}
+                    <div class="alert alert-info">Aucune source n'a été ajouté.</div>
+                    {% endif %}
+                </div>
+              </div>
+          </div>
 
-    <p>Date de création: {{ project.date | date('d/m/Y') }}</p>
-    <p>Langue du projet: {{ project.getLang().code }}</p>
-    <p>Nombre de sources: {{ sources | length }}</p>
-    {% if project.getFrozen() %}
-        <p>Project actuellement mis en pause</p>
-    {% else %}
-        <p>Project actuellement disponible</p>
-    {% endif %}
+            <div class="col-md-4">
+              <div class="card my-4">
+                <h5 class="card-header">Informations</h5>
+                <div class="card-body">
+                    <button data-toggle="tooltip" data-placement="top" title="Date de création" type="button" class="btn btn-primary">
+                      <span class="badge badge-light">{{ project.date | date('d/m/Y') }}</span>
+                    </button>
+                    <button data-toggle="tooltip" data-placement="top" title="Nombre de source" type="button" class="btn btn-secondary">
+                      <span class="badge badge-light">{{ allsources | length }}</span>
+                    </button>
+                    {% if project.getFrozen() %}
+                        <button data-toggle="tooltip" data-placement="top" title="Projet fermé" type="button" class="btn btn-danger">
+                          <span class="badge badge-light">Indisponible</span>
+                        </button>
+                    {% else %}
+                        <button data-toggle="tooltip" data-placement="top" title="Projet ouvert" type="button" class="btn btn-success">
+                          <span class="badge badge-light">Disponible</span>
+                        </button>
+                    {% endif %}
+                </div>
+              </div>
 
-    <div class="col-4">
-        <canvas id="sourcesChart" width="200" height="200"></canvas>
-    </div>
+              {% if (allsources|length) > 0 %}
+              <div class="card my-4">
+                <h5 class="card-header">Sources</h5>
+                <div class="card-body">
+                    <canvas id="sourcesChart" width="200" height="200"></canvas>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+            <script>
+                $( document ).ready(function() {
+                    var ctx = $("#sourcesChart");
 
-    <h2>Liste des sources</h2>
-    {% if (sources) %}
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Nom de la source</th>
-                        <th scope="col">Nombre de traduction</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for source in sources %}
-                        <tr>
-                            <th scope="row">{{ source.source }}</th>
-                            <td>{{ source.getTargets() | length }}</td>
-                            <td>
-                                <a href="{{ path('project_source', {'idproj': project.id, 'ids': source.id}) }}" class="btn btn-primary" role="button">Voir les traductions</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            </div><br />
-    {% else %}
-        <p>Aucune source pour le moment.</p>
-    {% endif %}
-
-    <script>
-        $( document ).ready(function() {
-            var ctx = $("#sourcesChart");
-
-            var myPieChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                labels: [
-                    {% for source in sources %}
-                          '{{ source.getSource }}'{% if not loop.last %},{% endif %}
-                    {% endfor %}
-                      ],
-                  datasets: [{
-                    data: [
-                        {% for source in sources %}
-                            {{source.getTargets() | length }}{% if not loop.last %},{% endif %}
-                        {% endfor %}
-                    ]
-                  }]
-                },
-                options: {
-                	plugins: {
-                        colorschemes: {
-                            scheme: 'brewer.Paired12'
+                    var myPieChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                        labels: [
+                            {% for source in allsources %}
+                                  '{{ source.getSource }}'{% if not loop.last %},{% endif %}
+                            {% endfor %}
+                              ],
+                          datasets: [{
+                            data: [
+                                {% for source in allsources %}
+                                    {{source.getTargets() | length }}{% if not loop.last %},{% endif %}
+                                {% endfor %}
+                            ]
+                          }]
+                        },
+                        options: {
+                        	plugins: {
+                                colorschemes: {
+                                    scheme: 'brewer.Paired12'
+                                }
+                            }
                         }
-                    }
-                }
-            });
-        });
-    </script>
-
+                    });
+                });
+            </script>
+        </div>
 {% endblock %}
