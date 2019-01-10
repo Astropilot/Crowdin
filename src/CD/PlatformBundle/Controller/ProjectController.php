@@ -64,11 +64,13 @@ class ProjectController extends Controller
     /**
      * @Route("/project/{idproj}/view_source/{ids}", name="project_source", requirements={"idproj": "\d+", "ids": "\d+"})
      */
-    public function viewTargetsAction($idproj, $ids)
+    public function viewTargetsAction($idproj, $ids, Request $request)
     {
         if (null === $this->getUser()) {
       		return $this->redirectToRoute('projects_list');
 		}
+
+        $user = $this->getUser();
 
         $repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
 		$project = $repository->find($idproj);
@@ -84,9 +86,48 @@ class ProjectController extends Controller
             throw new NotFoundHttpException("La source portant l'id ".$ids." n'existe pas.");
         }
 
+        $target = new Traduction_Target();
+
+		$formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $target);
+
+		$formBuilder
+            ->add('lang',       EntityType::class, array('class' => Lang::class,
+                'query_builder' => function($repository) use($project, $user) {
+                    $qb = $repository->createQueryBuilder('l');
+                    return $qb
+                        ->where('l.code != :projectlang')
+                        ->andWhere('l in (:userlangs)')
+                        ->setParameter('projectlang', $project->getLang())
+                        ->setParameter('userlangs', $user->getLangs())
+                    ;
+                }, 'choice_label' => 'code', 'multiple' => false))
+            ->add('target',     TextType::class)
+			->add('save',       SubmitType::class, array('label' => 'Valider'))
+		;
+
+		$form = $formBuilder->getForm();
+
+        if ($request->isMethod('POST')) {
+			$form->handleRequest($request);
+
+			if ($form->isValid()) {
+                $target->setSource($source);
+                $target->setAuthor($user);
+                $target->setDate(new \Datetime());
+
+				$em = $this->getDoctrine()->getManager();
+				$em->persist($target);
+				$em->flush();
+
+				$request->getSession()->getFlashBag()->add('success', 'La traduction à bien été ajoutée !');
+				//return $this->redirectToRoute('projects_list');
+			}
+		}
+
         return $this->render('CDPlatformBundle:Project:view_source.html.twig', array(
 			'project' => $project,
             'source' => $source,
+            'form' => $form->createView(),
 		));
     }
 
@@ -134,7 +175,7 @@ class ProjectController extends Controller
             ->add('lang',  EntityType::class, array('class' => Lang::class, 'choice_label' => 'code', 'multiple' => false))
 			->add('save',      SubmitType::class, array('label' => 'Valider'))
 		;
-    
+
 		$form = $formBuilder->getForm();
 
 		if ($request->isMethod('POST')) {
