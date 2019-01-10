@@ -29,7 +29,8 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                </div><br />
+                </div>
+                <div class="text-center">{{ knp_pagination_render(projects) }}</div>
         {% else %}
             <p>Aucun</p>
         {% endif %}
@@ -105,6 +106,6 @@
             });
         </script>
     {% else %}
-        <h1 class="text-center my-4">Utilisateur introuvable</h1>
+        <div class="alert alert-warning">Cet utilisateur n'existe pas.</div>
     {% endif %}
 {% endblock %}

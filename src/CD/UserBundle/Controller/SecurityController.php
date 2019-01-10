@@ -127,7 +127,7 @@ class SecurityController extends Controller
     /**
      * @Route("/user/{username}", name="user_view", requirements={"username"="\w+"})
      */
-    public function showAction($username)
+    public function showAction($username, Request $request)
     {
         $repositoryUser = $this->getDoctrine()->getManager()->getRepository('CDUserBundle:User');
         $repositoryTraductionTarget = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Traduction_Target');
@@ -142,7 +142,8 @@ class SecurityController extends Controller
             if (!array_key_exists($project->getId(), $projects))
                 $projects[$project->getId()] = $project;
         }
-        $projects = array_values($projects);
+        $projects_list = array_values($projects);
+        $projects = $this->get('knp_paginator')->paginate($projects_list, $request->query->get('page', 1),5);
 
         foreach ($projects as $project) {
             $project->{"user_trad"} = $repositoryTraductionTarget->countSourcesTranslatedByUserIdForProject($user->getId(), $project->getId());
