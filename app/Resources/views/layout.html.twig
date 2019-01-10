@@ -22,13 +22,15 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('projects_list') }}">Projets</a>
-                        </li>
-                        {% if (app.user and app.user.getLangs()|length >= 2) %}
+                        {% if (app.user) %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('traductor_page') }}">Traduction</a>
+                                <a class="nav-link" href="{{ path('projects_list') }}">Projets</a>
                             </li>
+                            {% if (app.user.getLangs()|length >= 2) %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('traductor_page') }}">Traduction</a>
+                                </li>
+                            {% endif %}
                         {% endif %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -53,12 +55,20 @@
         </nav>
 
         <div class="container" id="main">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
             {% block body %}{% endblock %}
         </div>
 
         <footer class="py-5 bg-white">
             <p class="m-0 text-center text-dark">Copyright &copy; Crowdin 2018</p>
-            <p class="m-0 text-center text-dark">By martin_h & despla_g</p>
+            <p class="m-0 text-center text-dark">martin_h & despla_g</p>
         </footer>
         {% block javascripts %}
             <script src="https://blackrockdigital.github.io/startbootstrap-blog-home/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

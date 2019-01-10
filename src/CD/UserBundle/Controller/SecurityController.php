@@ -30,9 +30,13 @@ class SecurityController extends Controller
 
         $authenticationUtils = $this->get('security.authentication_utils');
 
+        if ($authenticationUtils->getLastAuthenticationError()) {
+            $request->getSession()->getFlashBag()->add('danger', 'Nom d\'utilisateur ou mot de passe incorrect.');
+            return $this->redirectToRoute('user_login');
+        }
+
         return $this->render('CDUserBundle:Security:login.html.twig', array(
             'last_username' => $authenticationUtils->getLastUsername(),
-            'error'         => $authenticationUtils->getLastAuthenticationError(),
         ));
     }
 
@@ -129,6 +133,7 @@ class SecurityController extends Controller
         $repositoryTraductionTarget = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Traduction_Target');
 
 		$user = $repositoryUser->findOneByUsername($username);
+
         $projects = array();
 
         $user_all_trads = $repositoryTraductionTarget->findByAuthor($user);
