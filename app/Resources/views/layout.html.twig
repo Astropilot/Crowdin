@@ -8,6 +8,7 @@
         <title>{% block title %}Crowdin{% endblock %}</title>
         {% block stylesheets %}
             <link href="https://blackrockdigital.github.io/startbootstrap-blog-home/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
             <style>#main { min-height: 500px; padding-top: 70px; }</style>
             <script src="https://blackrockdigital.github.io/startbootstrap-blog-home/vendor/jquery/jquery.min.js"></script>
         {% endblock %}
@@ -22,13 +23,15 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('projects_list') }}">Projets</a>
-                        </li>
-                        {% if (app.user and app.user.getLangs()|length >= 2) %}
+                        {% if (app.user) %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('traductor_page') }}">Traduction</a>
+                                <a class="nav-link" href="{{ path('projects_list') }}">Projets</a>
                             </li>
+                            {% if (app.user.getLangs()|length >= 2) %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('traductor_page') }}">Traduction</a>
+                                </li>
+                            {% endif %}
                         {% endif %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -53,18 +56,31 @@
         </nav>
 
         <div class="container" id="main">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
             {% block body %}{% endblock %}
         </div>
 
         <footer class="py-5 bg-white">
             <p class="m-0 text-center text-dark">Copyright &copy; Crowdin 2018</p>
-            <p class="m-0 text-center text-dark">By martin_h & despla_g</p>
+            <p class="m-0 text-center text-dark">martin_h & despla_g</p>
         </footer>
         {% block javascripts %}
             <script src="https://blackrockdigital.github.io/startbootstrap-blog-home/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes@latest/dist/chartjs-plugin-colorschemes.min.js"></script>
+            <script>
+            $(function () {
+              $('[data-toggle="tooltip"]').tooltip()
+            })
+            </script>
         {% endblock %}
     </body>
 </html>

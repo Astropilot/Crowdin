@@ -27,7 +27,7 @@ class ProjectController extends Controller
 	public function indexAction()
 	{
 		if (null === $this->getUser()) {
-      		return $this->redirectToRoute('user_login');
+          return $this->redirectToRoute('user_login');
 		}
 
 		$repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Project');
@@ -134,7 +134,7 @@ class ProjectController extends Controller
             ->add('lang',  EntityType::class, array('class' => Lang::class, 'choice_label' => 'code', 'multiple' => false))
 			->add('save',      SubmitType::class, array('label' => 'Valider'))
 		;
-
+    
 		$form = $formBuilder->getForm();
 
 		if ($request->isMethod('POST')) {
