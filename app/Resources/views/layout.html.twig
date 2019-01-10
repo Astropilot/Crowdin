@@ -8,6 +8,7 @@
         <title>{% block title %}Crowdin{% endblock %}</title>
         {% block stylesheets %}
             <link href="https://blackrockdigital.github.io/startbootstrap-blog-home/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
             <style>#main { min-height: 500px; padding-top: 70px; }</style>
             <script src="https://blackrockdigital.github.io/startbootstrap-blog-home/vendor/jquery/jquery.min.js"></script>
         {% endblock %}
@@ -75,6 +76,11 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes@latest/dist/chartjs-plugin-colorschemes.min.js"></script>
+            <script>
+            $(function () {
+              $('[data-toggle="tooltip"]').tooltip()
+            })
+            </script>
         {% endblock %}
     </body>
 </html>
