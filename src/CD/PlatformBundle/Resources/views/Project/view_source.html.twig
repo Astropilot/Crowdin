@@ -30,13 +30,72 @@
                         <td scope="row">{{ traduction.getTarget() }}</td>
                         <td scope="row">{{ traduction.getAuthor().getUsername() }}</td>
                         <td>
+                            {% if app.user == project.getUser() and app.user == traduction.getAuthor() %}
+                                <a href="{{ path('modify_target', {'idproj': project.id, 'ids': source.id, 'idt': traduction.id }) }}" class="btn btn-primary" role="button">
+                                    Modifier la traduction
+                                </a>
+                            {% elseif not project.getFrozen() and app.user == traduction.getAuthor() and app.user.getLangs()|length >= 2 %}
+                                <a href="{{ path('modify_target', {'idproj': project.id, 'ids': source.id, 'idt': traduction.id }) }}" class="btn btn-primary" role="button">
+                                    Modifier la traduction
+                                </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div><br />
-    {% if not project.getFrozen() and app.user.getLangs()|length >= 2 %}
+
+    {% if is_modify %}
+        <div class="modal fade" id="modifyTargetModal" tabindex="-1" role="dialog" aria-labelledby="modifyTargetModalLabel">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modifyTargetModalLabel">Modifier une traduction</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+                      {{ form_errors(form) }}
+
+                      <div class="form-group">
+                          {{ form_label(form.target, "Votre traduction", {'label_attr': {'class': 'col-sm-12 control-label'}}) }}
+
+                          {{ form_errors(form.target) }}
+
+                          <div class="col-sm-12">
+                            {{ form_widget(form.target, {'attr': {'class': 'form-control'}}) }}
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <div class="col-sm-12">
+                          {{ form_widget(form.save, {'attr': {'class': 'btn btn-success float-right'}}) }}
+                          </div>
+                      </div>
+
+                      {{ form_rest(form) }}
+
+                  {{ form_end(form) }}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script type="text/javascript">
+            $(window).on('load',function(){
+                $('#modifyTargetModal').modal('show');
+            });
+        </script>
+    {% endif %}
+
+    {% if not project.getFrozen() and app.user.getLangs()|length >= 2 and not is_modify %}
         <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addTargetModal">
             Ajouter une traduction
         </button>

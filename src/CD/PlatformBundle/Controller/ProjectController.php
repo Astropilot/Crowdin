@@ -64,8 +64,9 @@ class ProjectController extends Controller
 
     /**
      * @Route("/project/{idproj}/view_source/{ids}", name="project_source", requirements={"idproj": "\d+", "ids": "\d+"})
+     * @Route("/project/{idproj}/view_source/{ids}/modify_target/{idt}", name="modify_target", requirements={"idproj": "\d+", "ids": "\d+", "idt": "\d+"})
      */
-    public function viewTargetsAction($idproj, $ids, Request $request)
+    public function viewTargetsAction($idproj, $ids, $idt = -1, Request $request)
     {
         if (null === $this->getUser()) {
       		return $this->redirectToRoute('projects_list');
@@ -87,21 +88,29 @@ class ProjectController extends Controller
             throw new NotFoundHttpException("La source portant l'id ".$ids." n'existe pas.");
         }
 
-        $target = new Traduction_Target();
+        $repository = $this->getDoctrine()->getManager()->getRepository('CDPlatformBundle:Traduction_Target');
+        if ($idt !== -1)
+            $target = $repository->find($idt);
+        else
+            $target = new Traduction_Target();
 
 		$formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $target, ['translation_domain' => false]);
 
-		$formBuilder
-            ->add('lang',       EntityType::class, array('class' => Lang::class,
-                'query_builder' => function($repository) use($project, $user) {
-                    $qb = $repository->createQueryBuilder('l');
-                    return $qb
-                        ->where('l.code != :projectlang')
-                        ->andWhere('l in (:userlangs)')
-                        ->setParameter('projectlang', $project->getLang())
-                        ->setParameter('userlangs', $user->getLangs())
-                    ;
-                }, 'choice_label' => 'code', 'multiple' => false))
+        if ($idt === -1) {
+            $formBuilder
+                ->add('lang',       EntityType::class, array('class' => Lang::class,
+                    'query_builder' => function($repository) use($project, $user) {
+                        $qb = $repository->createQueryBuilder('l');
+                        return $qb
+                            ->where('l.code != :projectlang')
+                            ->andWhere('l in (:userlangs)')
+                            ->setParameter('projectlang', $project->getLang())
+                            ->setParameter('userlangs', $user->getLangs())
+                        ;
+                    }, 'choice_label' => 'code', 'multiple' => false));
+        }
+
+        $formBuilder
             ->add('target',     TextType::class)
 			->add('save',       SubmitType::class, array('label' => 'Valider'))
 		;
@@ -120,8 +129,12 @@ class ProjectController extends Controller
 				$em->persist($target);
 				$em->flush();
 
-				$request->getSession()->getFlashBag()->add('success', 'La traduction à bien été ajoutée !');
-				//return $this->redirectToRoute('projects_list');
+                if ($idt !== -1) {
+				    $request->getSession()->getFlashBag()->add('success', 'La traduction à bien été modifiée !');
+                    return $this->redirectToRoute('project_source', array('idproj' => $idproj, 'ids' => $ids));
+                }
+                else
+                    $request->getSession()->getFlashBag()->add('success', 'La traduction à bien été ajoutée !');
 			}
 		}
 
@@ -129,6 +142,7 @@ class ProjectController extends Controller
 			'project' => $project,
             'source' => $source,
             'form' => $form->createView(),
+            'is_modify' => ($idt !== -1),
 		));
     }
 
