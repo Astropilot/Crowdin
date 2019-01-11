@@ -80,6 +80,14 @@
             $(function () {
               $('[data-toggle="tooltip"]').tooltip()
             })
+            $(function () {
+              $('[data-toggle="popover"]').popover()
+            })
+            $(function () {
+              $('.test').popover({
+                container: 'body'
+              })
+            })
             </script>
         {% endblock %}
     </body>

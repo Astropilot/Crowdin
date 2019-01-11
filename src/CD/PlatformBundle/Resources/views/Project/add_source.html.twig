@@ -10,7 +10,9 @@
 		<small>{{ project.getName() }}</small>
 	</h1>
 
-    <h2>Ajouter une source</h2>
+    <div class="card mb-4 ">
+      <div class="card-header">Ajouter une source</div>
+      <div class="card-body">
 
     {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
 
@@ -45,15 +47,23 @@
     	{{ form_rest(form) }}
 
     {{ form_end(form) }}
+      </div>
+    </div>
 
-    <h2>Importer un fichier de sources</h2>
+    <div class="card mb-4 ">
+      <div class="card-header">Importer un fichier de sources</div>
+      <div class="card-body">
 
     <form method="POST" enctype="multipart/form-data">
       <div class="form-group">
-        <label for="sourcesFile">Fichier CSV de sources</label>
-        <input type="file" class="form-control-file" id="sourcesFile" name="sourcesFile">
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="sourcesFile" name="sourcesFile">
+          <label class="custom-file-label" for="sourcesFile">Choisir un fichier CSV</label>
+        </div>
       </div>
       <button type="submit" class="btn btn-primary">Envoyer</button>
     </form>
+      </div>
+    </div>
 
 {% endblock %}

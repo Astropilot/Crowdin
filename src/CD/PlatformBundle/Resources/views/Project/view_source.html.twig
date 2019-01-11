@@ -5,12 +5,17 @@
 {% endblock %}
 
 {% block cdplatform_body %}
-
+    <div style="float: right; margin-top: 20px">
+      <button data-toggle="tooltip" data-placement="top" title="Nom de la source" type="button" class="btn btn-primary">
+        <i class="fab fa-sourcetree"></i> {{ source.source }}
+      </button>
+      <a href="{{ path('project_show', {'id': project.id}) }}" role="button" class="btn btn-secondary">
+        <i class="fas fa-long-arrow-alt-left"></i> Retour
+      </a>
+    </div>
 	<h1 class="my-4">Projet
 		<small>{{ project.getName() }}</small>
 	</h1>
-
-    <h2>Source "{{ source.source }}"</h2>
 
     <h3>Liste des traductions</h3>
     <div class="table-responsive">
@@ -35,12 +40,12 @@
                         </td>
                         <td>
                             {% if app.user == project.getUser() and app.user == traduction.getAuthor() %}
-                                <a href="{{ path('modify_target', {'idproj': project.id, 'ids': source.id, 'idt': traduction.id }) }}" class="btn btn-primary" role="button">
-                                    Modifier la traduction
+                                <a data-toggle="tooltip" data-placement="top" title="Modifier la traduction" href="{{ path('modify_target', {'idproj': project.id, 'ids': source.id, 'idt': traduction.id }) }}" class="btn btn-warning" role="button">
+                                    <i class="fas fa-pen-square"></i>
                                 </a>
                             {% elseif not project.getFrozen() and app.user == traduction.getAuthor() and app.user.getLangs()|length >= 2 %}
-                                <a href="{{ path('modify_target', {'idproj': project.id, 'ids': source.id, 'idt': traduction.id }) }}" class="btn btn-primary" role="button">
-                                    Modifier la traduction
+                                <a data-toggle="tooltip" data-placement="top" title="Modifier la traduction" href="{{ path('modify_target', {'idproj': project.id, 'ids': source.id, 'idt': traduction.id }) }}" class="btn btn-warning" role="button">
+                                    <i class="fas fa-pen-square"></i>
                                 </a>
                             {% endif %}
                         </td>
@@ -75,20 +80,14 @@
                             {{ form_widget(form.target, {'attr': {'class': 'form-control'}}) }}
                           </div>
                       </div>
-
-                      <div class="form-group">
-                          <div class="col-sm-12">
-                          {{ form_widget(form.save, {'attr': {'class': 'btn btn-success float-right'}}) }}
-                          </div>
-                      </div>
-
+              </div>
+              <div class="modal-footer">
+                {{ form_widget(form.save, {'attr': {'class': 'btn btn-success float-right'}}) }}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
                       {{ form_rest(form) }}
 
                   {{ form_end(form) }}
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
             </div>
           </div>
         </div>
@@ -101,8 +100,8 @@
     {% endif %}
 
     {% if not project.getFrozen() and app.user.getLangs()|length >= 2 and not is_modify %}
-        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addTargetModal">
-            Ajouter une traduction
+        <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#addTargetModal">
+            <i class="fas fa-plus"></i> Ajouter une traduction
         </button>
 
         <div class="modal fade" id="addTargetModal" tabindex="-1" role="dialog" aria-labelledby="addTargetModalLabel" aria-hidden="true">
@@ -138,20 +137,15 @@
                             {{ form_widget(form.target, {'attr': {'class': 'form-control'}}) }}
                           </div>
                       </div>
-
-                      <div class="form-group">
-                          <div class="col-sm-12">
-                          {{ form_widget(form.save, {'attr': {'class': 'btn btn-success float-right'}}) }}
-                          </div>
-                      </div>
+              </div>
+              <div class="modal-footer">
+              {{ form_widget(form.save, {'attr': {'class': 'btn btn-success float-right'}}) }}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
 
                       {{ form_rest(form) }}
 
                   {{ form_end(form) }}
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
             </div>
           </div>
         </div>
