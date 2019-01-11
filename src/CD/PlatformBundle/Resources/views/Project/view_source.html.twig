@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for traduction in source.getTargets() %}
+                {% for traduction in targets %}
                     <tr>
                         <td scope="row">
                             <span data-toggle="tooltip" data-placement="top" title="{{traduction.getLang().code}}" class="badge badge-light"><img width="32" height="32" src="https://www.countryflags.io/{{traduction.getLang().code[3:4]|lower}}/shiny/64.png" /></span>
@@ -48,7 +48,8 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div><br />
+    </div>
+    <div class="text-center">{{ knp_pagination_render(targets) }}</div>
 
     {% if is_modify %}
         <div class="modal fade" id="modifyTargetModal" tabindex="-1" role="dialog" aria-labelledby="modifyTargetModalLabel">

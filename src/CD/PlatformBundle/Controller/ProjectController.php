@@ -142,9 +142,12 @@ class ProjectController extends Controller
 			}
 		}
 
+        $targets = $this->get('knp_paginator')->paginate($source->getTargets(), $request->query->get('page', 1),10);
+
         return $this->render('CDPlatformBundle:Project:view_source.html.twig', array(
 			'project' => $project,
             'source' => $source,
+            'targets' => $targets,
             'form' => $form->createView(),
             'is_modify' => ($idt !== -1),
 		));
