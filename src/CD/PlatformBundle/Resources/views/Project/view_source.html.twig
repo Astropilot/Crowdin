@@ -26,9 +26,13 @@
             <tbody>
                 {% for traduction in source.getTargets() %}
                     <tr>
-                        <td scope="row">{{ traduction.getLang().code }}</td>
+                        <td scope="row">
+                            <span data-toggle="tooltip" data-placement="top" title="{{traduction.getLang().code}}" class="badge badge-light"><img width="32" height="32" src="https://www.countryflags.io/{{traduction.getLang().code[3:4]|lower}}/shiny/64.png" /></span>
+                        </td>
                         <td scope="row">{{ traduction.getTarget() }}</td>
-                        <td scope="row">{{ traduction.getAuthor().getUsername() }}</td>
+                        <td scope="row">
+                            <a href="{{ path('user_view', {'username': traduction.getAuthor().getUsername()}) }}">{{ traduction.getAuthor().getUsername() }}</a>
+                        </td>
                         <td>
                             {% if app.user == project.getUser() and app.user == traduction.getAuthor() %}
                                 <a href="{{ path('modify_target', {'idproj': project.id, 'ids': source.id, 'idt': traduction.id }) }}" class="btn btn-primary" role="button">

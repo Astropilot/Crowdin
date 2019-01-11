@@ -62,7 +62,7 @@
                 <h5 class="card-header">Langues</h5>
                 <div class="card-body">
                     {% for lang in user.getLangs() %}
-                        <span data-toggle="tooltip" data-placement="top" title="{{lang.code}}" class="badge badge-light"><img width="29" height="19" src="http://flags.fmcdn.net/data/flags/w1160/{{lang.code[3:4]|lower}}.png" /></span>
+                        <span data-toggle="tooltip" data-placement="top" title="{{lang.code}}" class="badge badge-light"><img width="32" height="32" src="https://www.countryflags.io/{{lang.code[3:4]|lower}}/shiny/64.png" /></span>
                     {% endfor %}
                 </div>
               </div>

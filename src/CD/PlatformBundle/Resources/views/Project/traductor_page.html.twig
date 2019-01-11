@@ -44,27 +44,23 @@
 			<table class="table">
 				<thead>
 					<tr>
-						<th scope="col">#</th>
 						<th scope="col">Nom</th>
 						<th scope="col">Date de création</th>
-						<th scope="col">Nom d'utilisateur</th>
+						<th scope="col">Créateur</th>
 						<th scope="col">Code de langue</th>
-	                    <th scope="col">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for project in projects %}
 						<tr>
-							<th scope="row">
-	                        <a href="{{ path('project_show', {'id': project.id}) }}" class="btn btn-primary" role="button">{{ project.id }}</a>
-	                        </th>
-							<td>{{ project.name }}</td>
+							<td>
+                                <a href="{{ path('project_show', {'id': project.id}) }}">{{ project.name }}</a>
+                            </td>
 							<td>{{ project.date|date('d/m/Y') }}</td>
-							<td>{{ project.user.username }}</td>
-							<td>{{ project.lang.code }}</td>
-	                        <td>
-
-	                        </td>
+							<td>
+                                <a href="{{ path('user_view', {'username': project.user.username}) }}">{{ project.user.username }}</a>
+                            </td>
+							<td><span data-toggle="tooltip" data-placement="top" title="{{project.lang.code}}" class="badge badge-light"><img width="32" height="32" src="https://www.countryflags.io/{{project.lang.code[3:4]|lower}}/shiny/64.png" /></span></td>
 						</tr>
 					{% endfor %}
 				</tbody>
